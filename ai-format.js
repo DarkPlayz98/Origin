@@ -1,20 +1,24 @@
-/* Origin AI presentation layer.
- * Keeps Crystal's API client untouched and prevents Markdown markers like ###
- * from leaking into Origin's editorial UI.
- */
+/* Origin AI presentation layer. Keeps AI output clean and ready for Origin's rich UI. */
 (function () {
-  const original = window.originAISummarize;
-  if (typeof original !== "function") return;
-
-  const clean = text => String(text ?? "")
-    .replace(/\r\n/g, "\n")
-    .replace(/^\s*#{1,6}\s*/gm, "")
-    .replace(/^\s*\*\*(ORIGIN|FIRST PRODUCT|BREAKTHROUGH|WHY IT MATTERS)\*\*\s*:?\s*$/gmi, "$1")
-    .replace(/^\s*(ORIGIN|FIRST PRODUCT|BREAKTHROUGH|WHY IT MATTERS)\s*:\s*$/gmi, "$1")
-    .replace(/\n{3,}/g, "\n\n")
+  const clean = text => String(text ?? '')
+    .replace(/\r\n/g, '\n')
+    .replace(/^\s*#{1,6}\s+/gm, match => match.trimStart())
+    .replace(/\n{3,}/g, '\n\n')
     .trim();
 
-  window.originAISummarize = async function (company) {
-    return clean(await original(company));
+  const install = () => {
+    const original = window.originAISummarize;
+    if (typeof original !== 'function' || original.__originFormatted) return typeof original === 'function';
+    const wrapped = async function (company) {
+      return clean(await original(company));
+    };
+    wrapped.__originFormatted = true;
+    window.originAISummarize = wrapped;
+    return true;
   };
+
+  if (!install()) {
+    const timer = setInterval(() => { if (install()) clearInterval(timer); }, 50);
+    setTimeout(() => clearInterval(timer), 10000);
+  }
 })();
