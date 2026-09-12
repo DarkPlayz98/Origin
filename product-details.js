@@ -1,57 +1,192 @@
-/* Origin V2 product explorer: clickable products with models, variants and specs. */
+/* Origin V3 Product Explorer: live model discovery, full returned specs, 3D viewing, and refresh metadata. */
 (function () {
   'use strict';
 
-  const catalog = {
-    'iPhone': { type:'Hardware', models:[['iPhone 17 Pro Max','6.9-inch OLED · A19 Pro · Pro camera system · USB-C'],['iPhone 17 Pro','6.3-inch OLED · A19 Pro · Pro camera system · USB-C'],['iPhone 17','6.3-inch OLED · A19 · dual-camera system · USB-C']] },
-    'Mac': { type:'Hardware family', models:[['MacBook Air','M-series chip · fanless notebook · 13/15-inch classes'],['MacBook Pro','M-series Pro/Max chip options · 14/16-inch classes'],['iMac','24-inch all-in-one · Apple silicon · 4.5K-class display']] },
-    'iPad': { type:'Tablet', models:[['iPad Pro','Apple silicon · OLED display · USB-C/Thunderbolt class'],['iPad Air','Apple silicon · lightweight tablet · USB-C'],['iPad','11-inch class · Apple silicon generation dependent'],['iPad mini','Compact tablet · 8-inch class · Apple silicon generation dependent']] },
-    'Apple Watch': { type:'Wearable', models:[['Apple Watch Series','Aluminum/stainless-class cases · OLED display · health and fitness sensors'],['Apple Watch Ultra','49mm titanium-class case · rugged design · extended battery class'],['Apple Watch SE','Entry Apple Watch family · fitness and safety features']] },
-    'AirPods': { type:'Audio', models:[['AirPods Pro','In-ear · active noise cancellation · USB-C charging case'],['AirPods','Open-fit wireless earbuds · charging case'],['AirPods Max','Over-ear wireless headphones · active noise cancellation']] },
-    'Apple Vision Pro': { type:'Spatial computer', models:[['Vision Pro','Micro-OLED displays · eye/hand tracking · Apple silicon · spatial audio']] },
-    'HomePod': { type:'Smart speaker', models:[['HomePod','High-excursion woofer · beamforming microphones · spatial audio'],['HomePod mini','Compact smart speaker · computational audio · Siri']] },
-    'Mac mini': { type:'Desktop', models:[['Mac mini','Compact desktop · Apple silicon · HDMI · USB-C/Thunderbolt class ports']] },
-    'MacBook Air': { type:'Notebook', models:[['13-inch MacBook Air','13-inch class · Apple silicon · fanless design'],['15-inch MacBook Air','15-inch class · Apple silicon · fanless design']] },
-    'MacBook Pro': { type:'Professional notebook', models:[['14-inch MacBook Pro','14-inch class · Pro/Max chip options · Liquid Retina XDR class'],['16-inch MacBook Pro','16-inch class · Pro/Max chip options · Liquid Retina XDR class']] },
-    'iMac': { type:'All-in-one desktop', models:[['24-inch iMac','24-inch 4.5K-class display · Apple silicon · all-in-one chassis']] },
-    'Windows': { type:'Operating system', models:[['Windows 11 Home','Consumer edition · x64/Arm64 hardware support · desktop OS'],['Windows 11 Pro','Business/pro edition · management and security features']] },
-    'Surface': { type:'Hardware family', models:[['Surface Laptop','Windows laptop family · touchscreen options · Snapdragon/Intel class configurations'],['Surface Pro','2-in-1 tablet PC · detachable keyboard · touchscreen'],['Surface Laptop Studio','Convertible performance PC · touch display · discrete graphics options']] },
-    'Xbox': { type:'Console', models:[['Xbox Series X','4K-class gaming · SSD storage · high-performance console'],['Xbox Series S','Digital-first console · SSD storage · 1440p-class target'],['Xbox Cloud Gaming','Cloud streaming service · supported devices vary']] },
-    'Azure': { type:'Cloud platform', models:[['Virtual Machines','Configurable CPU, memory, storage and GPU tiers'],['Azure App Service','Managed web/app hosting · autoscaling options'],['Azure Functions','Serverless compute · event-driven execution']] },
-    'Kindle': { type:'E-reader', models:[['Kindle Paperwhite','E-ink display · adjustable front light · waterproof class'],['Kindle Scribe','Large E-ink display · pen input · reading and writing'],['Kindle','Compact E-ink reader · front light class']] },
-    'Fire TV': { type:'Streaming device', models:[['Fire TV Stick','HD/4K streaming depending on model · Wi-Fi · Alexa remote'],['Fire TV Stick 4K','4K streaming · HDR formats · Wi-Fi'],['Fire TV Cube','Hands-free Alexa · streaming hub · HDMI connectivity']] },
-    'Echo / Alexa': { type:'Smart home', models:[['Echo','Smart speaker · Alexa · far-field microphones'],['Echo Dot','Compact smart speaker · Alexa'],['Echo Show','Smart display · Alexa · touchscreen']] },
-    'Air Jordan': { type:'Footwear', models:[['Air Jordan 1','High/low basketball-inspired sneaker · Air cushioning family'],['Air Jordan 4','Basketball-inspired silhouette · visible Air cushioning class'],['Air Jordan 11','Basketball/lifestyle line · carbon-fiber-style support plate family']] },
-    'Air Max': { type:'Footwear', models:[['Air Max 1','Visible Air cushioning · mesh/synthetic upper family'],['Air Max 90','Lifestyle runner · visible Air unit'],['Air Max 97','Full-length wave-inspired upper · Air cushioning family']] },
-    'Air Force 1': { type:'Footwear', models:[['Air Force 1 Low','Low-top basketball-inspired sneaker · Air cushioning'],['Air Force 1 Mid','Mid-top construction · Air cushioning'],['Air Force 1 High','High-top construction · ankle strap · Air cushioning']] },
-    'Dunk': { type:'Footwear', models:[['Dunk Low','Low-top basketball-inspired sneaker · rubber outsole'],['Dunk High','High-top construction · padded collar']] },
-    'Pegasus': { type:'Running shoe', models:[['Pegasus','Neutral daily trainer family · responsive foam · engineered mesh variants']] },
-    'Pixel': { type:'Hardware family', models:[['Pixel phone','Google Tensor-class chip · Android · multi-camera system; exact specs vary by generation'],['Pixel Watch','Wear OS · health sensors · circular OLED-class display'],['Pixel Tablet','Android tablet · Tensor-class platform generation dependent']] },
-    'Android': { type:'Operating system', models:[['Android 16','Mobile OS · Material 3 era · device-specific features vary'],['Android Go','Optimized Android edition for entry-level devices']] },
-    'Google Maps': { type:'Software', models:[['Maps mobile app','Android/iOS navigation · maps · routing · places'],['Maps web','Browser-based maps · routing · places · satellite imagery']] },
-    'Chrome': { type:'Browser', models:[['Chrome desktop','Windows/macOS/Linux · extensions · multi-process browser architecture'],['Chrome mobile','Android/iOS · mobile tabs and sync features']] },
-    'Figma Design': { type:'Design software', models:[['Design editor','Browser/desktop collaborative UI design · multiplayer editing'],['Dev Mode','Developer-focused inspection · measurements · code-oriented handoff']] },
-    'FigJam': { type:'Collaboration software', models:[['FigJam board','Online whiteboard · multiplayer collaboration · widgets'],['FigJam templates','Reusable workshop and planning boards']] },
-    'Figma Slides': { type:'Presentation software', models:[['Slides','Collaborative presentations · design-system integration · browser based']] },
-    'Netflix streaming': { type:'Streaming service', models:[['Standard with ads','Streaming plan · supported devices and resolution depend on plan/market'],['Standard','Streaming plan · HD-class viewing depending on market'],['Premium','Higher-resolution streaming tier where offered · plan limits vary by market']] },
-    'Airbnb app': { type:'Travel software', models:[['Guest experience','Search · maps · booking · messaging · trip management'],['Host experience','Listing management · calendar · pricing · guest communication']] }
+  const PHONE_API = 'https://api-mobilespecs.azharimm.dev';
+  const CACHE_TTL = 30 * 60 * 1000;
+
+  // Curated 3D embeds are used only where a specific model page is known.
+  // Other products get a direct 3D-search action instead of inventing a model.
+  const model3D = {
+    'iPhone 17 Pro Max': 'https://sketchfab.com/models/87fc1df741384124a8ce0226d2b2058d/embed',
+    'iPhone 16 Pro Max': 'https://sketchfab.com/models/8acb38f436d5467c82fa5364712dd8df/embed',
+    'MacBook Pro': 'https://sketchfab.com/models/a2158f4d07c24861b268b170cb24c6d8/embed'
   };
 
-  function escapeHTML(value) { return String(value ?? '').replace(/[&<>\\"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','\\':'&#92;','"':'&quot;'}[c])); }
+  const fallbackCatalog = {
+    'iPhone': ['iPhone 17 Pro Max','iPhone 17 Pro','iPhone 17','iPhone Air','iPhone 16 Pro Max','iPhone 16 Pro','iPhone 16 Plus','iPhone 16'],
+    'Mac': ['MacBook Air','MacBook Pro','iMac','Mac mini','Mac Studio','Mac Pro'],
+    'iPad': ['iPad Pro','iPad Air','iPad','iPad mini'],
+    'Apple Watch': ['Apple Watch Series','Apple Watch Ultra','Apple Watch SE'],
+    'AirPods': ['AirPods Pro','AirPods','AirPods Max'],
+    'Surface': ['Surface Laptop','Surface Pro','Surface Laptop Studio'],
+    'Xbox': ['Xbox Series X','Xbox Series S'],
+    'Kindle': ['Kindle Paperwhite','Kindle Scribe','Kindle'],
+    'Fire TV': ['Fire TV Stick','Fire TV Stick 4K','Fire TV Cube'],
+    'Echo / Alexa': ['Echo','Echo Dot','Echo Show'],
+    'Air Jordan': ['Air Jordan 1','Air Jordan 4','Air Jordan 11'],
+    'Air Max': ['Air Max 1','Air Max 90','Air Max 97'],
+    'Air Force 1': ['Air Force 1 Low','Air Force 1 Mid','Air Force 1 High'],
+    'Dunk': ['Dunk Low','Dunk High'],
+    'Pegasus': ['Pegasus'],
+    'Pixel': ['Pixel phone','Pixel Watch','Pixel Tablet'],
+    'Android': ['Android'],
+    'Google Maps': ['Google Maps'],
+    'Chrome': ['Chrome'],
+    'Figma Design': ['Figma Design','Dev Mode'],
+    'FigJam': ['FigJam'],
+    'Figma Slides': ['Figma Slides'],
+    'Netflix streaming': ['Netflix Standard with ads','Netflix Standard','Netflix Premium'],
+    'Airbnb app': ['Airbnb guest experience','Airbnb host experience']
+  };
 
-  function showProduct(company, product) {
-    const data = catalog[product] || { type:'Product / service', models:[['Product profile','Origin has not catalogued generation-level specifications for this product yet. The product name, company and role in the company story are preserved.']] };
+  const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+  function cacheKey(company, product) {
+    return `origin-v3:${company}:${product}`.toLowerCase().replace(/[^a-z0-9:_-]+/g, '-');
+  }
+
+  function readCache(key) {
+    try {
+      const item = JSON.parse(localStorage.getItem(key) || 'null');
+      if (item && Date.now() - item.time < CACHE_TTL) return item.data;
+    } catch (_) {}
+    return null;
+  }
+
+  function writeCache(key, data) {
+    try { localStorage.setItem(key, JSON.stringify({ time: Date.now(), data })); } catch (_) {}
+  }
+
+  function isPhoneProduct(company, product) {
+    const p = `${company} ${product}`.toLowerCase();
+    return /iphone|pixel phone|galaxy|phone|smartphone|oneplus|xiaomi|redmi|poco|nokia phone|motorola|asus rog phone|nothing phone|realme/.test(p);
+  }
+
+  async function fetchJSON(url) {
+    const response = await fetch(url, { headers: { Accept: 'application/json' } });
+    if (!response.ok) throw new Error(`Live catalog HTTP ${response.status}`);
+    return response.json();
+  }
+
+  function normaliseSearch(data) {
+    if (Array.isArray(data)) return data;
+    return data?.data?.phones || data?.data?.results || data?.phones || data?.results || [];
+  }
+
+  function modelName(item) {
+    return item?.phone_name || item?.name || item?.model || item?.model_name || item?.title || 'Unnamed model';
+  }
+
+  function modelSlug(item) {
+    return item?.slug || item?.url || item?.phone_slug || item?.id || '';
+  }
+
+  async function livePhoneModels(company, product) {
+    const query = `${company} ${product}`.trim();
+    const key = cacheKey(company, product);
+    const cached = readCache(key);
+    if (cached) return { models: cached, source: 'Live phone database · cached', cached: true };
+
+    const data = await fetchJSON(`${PHONE_API}/search?query=${encodeURIComponent(query)}`);
+    const rows = normaliseSearch(data);
+    const models = rows.map(item => ({
+      name: modelName(item),
+      slug: modelSlug(item),
+      summary: [item?.release_date, item?.display?.size, item?.chipset, item?.ram].filter(Boolean).join(' · '),
+      raw: item
+    })).filter(item => item.name !== 'Unnamed model');
+
+    writeCache(key, models);
+    return { models, source: 'Live phone database · refreshed now', cached: false };
+  }
+
+  function flatten(value, prefix, out) {
+    if (value === null || value === undefined || value === '') return;
+    if (typeof value !== 'object') { out.push([prefix || 'Specification', String(value)]); return; }
+    if (Array.isArray(value)) {
+      if (!value.length) return;
+      value.forEach((v, i) => flatten(v, `${prefix || 'Item'} ${i + 1}`, out));
+      return;
+    }
+    Object.keys(value).forEach(key => flatten(value[key], prefix ? `${prefix} · ${key}` : key, out));
+  }
+
+  async function fullPhoneSpecs(item) {
+    const slug = item?.slug || item?.raw?.slug || item?.raw?.url || item?.raw?.phone_slug || item?.raw?.id;
+    if (!slug) return item?.raw || {};
+    const cleanSlug = String(slug).replace(/^https?:\/\/[^/]+\//, '').replace(/^\//, '');
+    const key = `origin-v3-spec:${cleanSlug}`;
+    const cached = readCache(key);
+    if (cached) return cached;
+
+    const candidates = [
+      `${PHONE_API}/${cleanSlug}`,
+      `${PHONE_API}/brands/apple-phones-48/${cleanSlug}`
+    ];
+    for (const url of candidates) {
+      try {
+        const data = await fetchJSON(url);
+        const result = data?.data || data?.phone || data;
+        if (result && typeof result === 'object') { writeCache(key, result); return result; }
+      } catch (_) {}
+    }
+    return item?.raw || {};
+  }
+
+  function sketchfabSearchURL(name) {
+    return `https://sketchfab.com/search?type=models&q=${encodeURIComponent(name)}`;
+  }
+
+  function embed3D(name) {
+    const exact = Object.keys(model3D).find(key => key.toLowerCase() === name.toLowerCase());
+    return exact ? model3D[exact] : '';
+  }
+
+  function render3D(name) {
+    const url = embed3D(name);
+    if (url) {
+      return `<div class="origin-3d-wrap"><div class="origin-3d-head"><span>INTERACTIVE 3D</span><small>Drag · pinch · rotate</small></div><iframe title="3D model of ${esc(name)}" src="${url}" allow="autoplay; fullscreen; xr-spatial-tracking" loading="lazy"></iframe></div>`;
+    }
+    return `<div class="origin-3d-empty"><div class="origin-3d-icon">3D</div><div><strong>3D model search</strong><p>No exact model is catalogued in Origin yet. Open the live 3D model library for ${esc(name)}.</p><a href="${sketchfabSearchURL(name)}" target="_blank" rel="noopener">Find 3D model ↗</a></div></div>`;
+  }
+
+  function renderFullSpecs(specs) {
+    const rows = [];
+    flatten(specs, '', rows);
+    const filtered = rows.filter(([key, value]) => !/^image|^thumbnail|^url$/i.test(key) && value.length < 600);
+    if (!filtered.length) return '<p class="origin-empty-spec">The live source did not return a structured specification sheet.</p>';
+    return `<div class="origin-spec-grid">${filtered.map(([key, value]) => `<div class="origin-spec-row"><span>${esc(key.replace(/[_-]+/g,' '))}</span><strong>${esc(value)}</strong></div>`).join('')}</div>`;
+  }
+
+  function renderModelCards(models, company, product) {
+    if (!models.length) {
+      const fallback = fallbackCatalog[product] || [];
+      if (!fallback.length) return `<div class="origin-empty-state"><strong>No models found yet.</strong><p>Origin won't invent model names. Refresh later when the live catalog has them.</p></div>`;
+      return fallback.map((name, index) => `<button class="origin-model-card" data-fallback-model="${esc(name)}" type="button"><span>${String(index + 1).padStart(2,'0')}</span><div><h3>${esc(name)}</h3><p>Catalogued product family · open for full details and 3D</p></div><b>›</b></button>`).join('');
+    }
+    return models.map((item, index) => `<button class="origin-model-card" data-live-model="${esc(item.name)}" type="button"><span>${String(index + 1).padStart(2,'0')}</span><div><h3>${esc(item.name)}</h3><p>${esc(item.summary || 'Live model record · select for the complete returned specification sheet')}</p></div><b>›</b></button>`).join('');
+  }
+
+  function createModal() {
+    if (document.getElementById('originProductModal')) return;
+    const modal = document.createElement('div');
+    modal.id = 'originProductModal';
+    modal.className = 'origin-product-modal';
+    modal.hidden = true;
+    modal.innerHTML = `<div class="origin-product-backdrop" data-close></div><section class="origin-product-sheet" role="dialog" aria-modal="true"><button class="origin-product-close" data-close aria-label="Close">×</button><div class="origin-product-kicker">PRODUCT EXPLORER · V3</div><div class="origin-product-heading"><div><h2 data-title></h2><p data-company></p></div><span class="origin-live-pill"><i></i> LIVE</span></div><div class="origin-product-body" data-body></div></section>`;
+    document.body.appendChild(modal);
+    modal.addEventListener('click', e => { if (e.target.closest('[data-close]')) closeModal(); });
+  }
+
+  function openModal() {
     const modal = document.getElementById('originProductModal');
-    modal.querySelector('[data-product-title]').textContent = product;
-    modal.querySelector('[data-product-company]').textContent = `${company.name} · ${data.type}`;
-    modal.querySelector('[data-product-models]').innerHTML = data.models.map((model, index) => `
-      <article class="origin-model-card"><div class="origin-model-number">${String(index + 1).padStart(2,'0')}</div><div><h3>${escapeHTML(model[0])}</h3><p>${escapeHTML(model[1])}</p></div></article>`).join('');
     modal.hidden = false;
     document.body.classList.add('origin-modal-open');
     requestAnimationFrame(() => modal.classList.add('is-open'));
   }
 
-  function closeProduct() {
+  function closeModal() {
     const modal = document.getElementById('originProductModal');
     if (!modal) return;
     modal.classList.remove('is-open');
@@ -59,15 +194,50 @@
     setTimeout(() => { modal.hidden = true; }, 180);
   }
 
-  function ensureModal() {
-    if (document.getElementById('originProductModal')) return;
-    const modal = document.createElement('div');
-    modal.id = 'originProductModal';
-    modal.className = 'origin-product-modal';
-    modal.hidden = true;
-    modal.innerHTML = `<div class="origin-product-backdrop" data-product-close></div><section class="origin-product-sheet" role="dialog" aria-modal="true" aria-labelledby="originProductTitle"><button class="origin-product-close" type="button" aria-label="Close" data-product-close>×</button><div class="origin-product-kicker">PRODUCT EXPLORER · V2</div><div class="origin-product-heading"><div><h2 id="originProductTitle" data-product-title></h2><p data-product-company></p></div><span class="origin-v2-pill">V2</span></div><div class="origin-model-list" data-product-models></div><p class="origin-spec-note">Specs are concise reference points, not a complete technical specification sheet. Exact specifications can vary by generation, region and configuration.</p></section>`;
-    document.body.appendChild(modal);
-    modal.addEventListener('click', event => { if (event.target.closest('[data-product-close]')) closeProduct(); });
+  async function showModel(company, product, item) {
+    const modal = document.getElementById('originProductModal');
+    const body = modal.querySelector('[data-body]');
+    body.innerHTML = `<div class="origin-loading"><div class="origin-spinner"></div><strong>Loading complete specification sheet…</strong><p>Origin is requesting the live record.</p></div>`;
+    try {
+      const specs = isPhoneProduct(company.name, product) ? await fullPhoneSpecs(item) : (item?.raw || {});
+      const name = item?.name || product;
+      body.innerHTML = `${render3D(name)}<div class="origin-detail-bar"><span>FULL SPECIFICATIONS</span><small>Source data · ${new Date().toLocaleString()}</small></div>${renderFullSpecs(specs)}<p class="origin-disclaimer">Origin displays the fields returned by the live source. It does not fill missing values with guesses. Specifications can vary by generation, market and configuration.</p>`;
+    } catch (error) {
+      body.innerHTML = `<div class="origin-empty-state"><strong>Live specification lookup failed.</strong><p>${esc(error.message || 'Unknown error')}</p><button class="origin-retry" type="button">Try again</button></div>`;
+      body.querySelector('.origin-retry')?.addEventListener('click', () => showModel(company, product, item));
+    }
+  }
+
+  async function showProduct(company, product) {
+    createModal();
+    const modal = document.getElementById('originProductModal');
+    modal.querySelector('[data-title]').textContent = product;
+    modal.querySelector('[data-company]').textContent = `${company.name} · live product catalog`;
+    const body = modal.querySelector('[data-body]');
+    body.innerHTML = `<div class="origin-loading"><div class="origin-spinner"></div><strong>Finding every available model…</strong><p>Checking the live catalog instead of using a fixed three-model list.</p></div>`;
+    openModal();
+
+    let result = { models: [], source: 'Product catalog' };
+    try {
+      if (isPhoneProduct(company.name, product)) result = await livePhoneModels(company.name, product);
+    } catch (_) {}
+
+    const models = result.models || [];
+    body.innerHTML = `<div class="origin-catalog-status"><div><strong>${models.length || (fallbackCatalog[product] || []).length || '—'} models</strong><span>${esc(result.source || 'Catalog')}</span></div><button type="button" class="origin-refresh" data-refresh>↻ Refresh</button></div><div class="origin-model-list">${renderModelCards(models, company, product)}</div><p class="origin-spec-note">Select any model for the complete specification fields returned by the live source. Origin does not truncate a model to only three headline specs.</p>`;
+
+    body.querySelectorAll('[data-live-model]').forEach(button => {
+      button.addEventListener('click', () => {
+        const found = models.find(m => m.name === button.dataset.liveModel);
+        showModel(company, product, found || { name: button.dataset.liveModel });
+      });
+    });
+    body.querySelectorAll('[data-fallback-model]').forEach(button => {
+      button.addEventListener('click', () => showModel(company, product, { name: button.dataset.fallbackModel, raw: { Product: button.dataset.fallbackModel, Status: 'Product family catalogued; detailed live specification source not connected for this category yet.' } }));
+    });
+    body.querySelector('[data-refresh]')?.addEventListener('click', async () => {
+      try { localStorage.removeItem(cacheKey(company.name, product)); } catch (_) {}
+      await showProduct(company, product);
+    });
   }
 
   function currentCompany(page) {
@@ -79,16 +249,15 @@
     if (!page) return;
     const company = currentCompany(page);
     page.querySelectorAll('.product-universe-card').forEach(card => {
-      if (card.dataset.originProductReady) return;
-      card.dataset.originProductReady = '1';
+      if (card.dataset.originProductV3) return;
+      card.dataset.originProductV3 = '1';
       card.setAttribute('role','button');
       card.setAttribute('tabindex','0');
-      const product = card.querySelector('strong')?.textContent?.trim();
-      card.setAttribute('aria-label', `Open ${product} models and specs`);
-      card.title = `Open ${product} models & specs`;
+      const product = card.querySelector('strong')?.textContent?.trim() || card.textContent.trim().split('\n')[0];
+      card.title = `Open all ${product} models, full specs & 3D`;
       const open = () => showProduct(company, product);
       card.addEventListener('click', open);
-      card.addEventListener('keydown', event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); open(); } });
+      card.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); } });
     });
   }
 
@@ -97,44 +266,32 @@
     if (!about || about.querySelector('.origin-version-badge')) return;
     const badge = document.createElement('span');
     badge.className = 'origin-version-badge';
-    badge.textContent = 'V2';
-    badge.title = 'Origin version 2';
+    badge.textContent = 'V3';
+    badge.title = 'Origin version 3 · live product explorer';
     about.querySelector('.manifesto-mark')?.appendChild(badge);
   }
 
   const style = document.createElement('style');
   style.textContent = `
     .origin-version-badge{position:absolute;top:-10px;right:-14px;display:grid;place-items:center;min-width:34px;height:24px;padding:0 8px;border:1px solid #deded9;border-radius:999px;background:#fff;color:#6d5dfc;font-size:10px;font-weight:800;letter-spacing:.08em;box-shadow:0 8px 20px rgba(17,17,17,.08)}
-    .manifesto-mark{position:relative}
-    .origin-modal-open{overflow:hidden}
-    .origin-product-modal{position:fixed;inset:0;z-index:100;display:block}
-    .origin-product-modal[hidden]{display:none}
-    .origin-product-backdrop{position:absolute;inset:0;background:rgba(17,17,17,.36);backdrop-filter:blur(8px);opacity:0;transition:opacity .18s ease}
-    .origin-product-sheet{position:absolute;left:50%;bottom:18px;width:min(760px,calc(100% - 24px));max-height:min(82vh,760px);overflow:auto;transform:translate(-50%,24px);opacity:0;border:1px solid #deded9;border-radius:28px;background:#fff;padding:30px;box-shadow:0 30px 90px rgba(17,17,17,.22);transition:transform .22s var(--ease),opacity .18s ease}
-    .origin-product-modal.is-open .origin-product-backdrop{opacity:1}
-    .origin-product-modal.is-open .origin-product-sheet{transform:translate(-50%,0);opacity:1}
-    .origin-product-close{position:absolute;right:18px;top:18px;width:38px;height:38px;border:1px solid #deded9;border-radius:50%;background:#fff;font-size:25px;line-height:1;cursor:pointer}
-    .origin-product-kicker{font-size:10px;font-weight:800;letter-spacing:.14em;color:#6d5dfc;margin-bottom:12px}
-    .origin-product-heading{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;border-bottom:1px solid #deded9;padding-bottom:22px;margin-bottom:18px}
-    .origin-product-heading h2{margin:0;font-size:clamp(30px,5vw,48px);letter-spacing:-.045em;line-height:1}
-    .origin-product-heading p{margin:9px 0 0;color:#6e6e6a}
-    .origin-v2-pill{display:inline-grid;place-items:center;min-width:40px;height:28px;padding:0 10px;border-radius:999px;background:#ebe8ff;color:#6d5dfc;font-size:10px;font-weight:800;letter-spacing:.08em}
-    .origin-model-list{display:grid;gap:10px}
-    .origin-model-card{display:grid;grid-template-columns:44px 1fr;gap:16px;align-items:start;padding:17px;border:1px solid #deded9;border-radius:18px;background:#f7f7f5}
-    .origin-model-number{font-size:11px;font-weight:800;color:#6d5dfc;padding-top:2px}
-    .origin-model-card h3{margin:0;font-size:17px;letter-spacing:-.02em}
-    .origin-model-card p{margin:6px 0 0;color:#6e6e6a;font-size:14px;line-height:1.6}
-    .origin-spec-note{margin:18px 0 0;color:#888883;font-size:12px;line-height:1.6}
-    .product-universe-card{cursor:pointer;transition:transform .2s var(--ease),border-color .2s ease,background .2s ease,box-shadow .2s ease}
-    .product-universe-card:hover,.product-universe-card:focus-visible{transform:translateY(-3px);border-color:#bdb8ff;background:#fff;box-shadow:0 12px 30px rgba(17,17,17,.07);outline:none}
-    @media(max-width:640px){.origin-product-sheet{bottom:8px;padding:22px;border-radius:24px;max-height:88vh}.origin-product-heading h2{font-size:32px}.origin-model-card{grid-template-columns:30px 1fr;padding:14px}.origin-v2-pill{display:none}}
+    .manifesto-mark{position:relative}.origin-modal-open{overflow:hidden}
+    .origin-product-modal{position:fixed;inset:0;z-index:100;display:block}.origin-product-modal[hidden]{display:none}
+    .origin-product-backdrop{position:absolute;inset:0;background:rgba(17,17,17,.42);backdrop-filter:blur(10px);opacity:0;transition:opacity .18s ease}
+    .origin-product-sheet{position:absolute;left:50%;bottom:14px;width:min(940px,calc(100% - 20px));max-height:92vh;overflow:auto;transform:translate(-50%,24px);opacity:0;border:1px solid #deded9;border-radius:30px;background:#fff;padding:30px;box-shadow:0 30px 100px rgba(17,17,17,.25);transition:transform .22s cubic-bezier(.2,.8,.2,1),opacity .18s ease}
+    .origin-product-modal.is-open .origin-product-backdrop{opacity:1}.origin-product-modal.is-open .origin-product-sheet{transform:translate(-50%,0);opacity:1}
+    .origin-product-close{position:absolute;right:18px;top:18px;width:40px;height:40px;border:1px solid #deded9;border-radius:50%;background:#fff;font-size:25px;cursor:pointer}
+    .origin-product-kicker{font-size:10px;font-weight:800;letter-spacing:.14em;color:#6d5dfc;margin-bottom:12px}.origin-product-heading{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;border-bottom:1px solid #deded9;padding-bottom:22px;margin-bottom:20px}.origin-product-heading h2{margin:0;font-size:clamp(30px,5vw,54px);letter-spacing:-.05em;line-height:1}.origin-product-heading p{margin:9px 0 0;color:#6e6e6a}
+    .origin-live-pill{display:flex;align-items:center;gap:7px;border:1px solid #deded9;border-radius:999px;padding:7px 10px;font-size:10px;font-weight:800;letter-spacing:.1em;color:#3e3e3a}.origin-live-pill i{width:7px;height:7px;border-radius:50%;background:#32a852;box-shadow:0 0 0 4px rgba(50,168,82,.12)}
+    .origin-catalog-status{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.origin-catalog-status strong{display:block;font-size:17px}.origin-catalog-status span{display:block;color:#888883;font-size:12px;margin-top:3px}.origin-refresh,.origin-retry{border:1px solid #deded9;background:#fff;border-radius:999px;padding:9px 13px;font-weight:700;cursor:pointer}
+    .origin-model-list{display:grid;gap:9px}.origin-model-card{width:100%;display:grid;grid-template-columns:42px 1fr 20px;gap:14px;text-align:left;align-items:center;padding:15px;border:1px solid #deded9;border-radius:17px;background:#f7f7f5;cursor:pointer;transition:.2s}.origin-model-card:hover,.origin-model-card:focus-visible{background:#fff;border-color:#bdb8ff;transform:translateY(-2px);box-shadow:0 12px 30px rgba(17,17,17,.07);outline:none}.origin-model-card>span{font-size:11px;font-weight:800;color:#6d5dfc}.origin-model-card h3{margin:0;font-size:16px}.origin-model-card p{margin:5px 0 0;color:#777772;font-size:13px;line-height:1.5}.origin-model-card b{font-size:22px;color:#aaa}
+    .origin-3d-wrap{overflow:hidden;border:1px solid #deded9;border-radius:22px;background:#f3f3f0;margin-bottom:22px}.origin-3d-head{display:flex;justify-content:space-between;padding:12px 15px;background:#fff;border-bottom:1px solid #deded9;font-size:10px;font-weight:800;letter-spacing:.12em}.origin-3d-head small{font-size:10px;letter-spacing:0;color:#888883;font-weight:600}.origin-3d-wrap iframe{display:block;width:100%;height:430px;border:0}.origin-3d-empty{display:flex;gap:16px;align-items:center;padding:20px;border:1px solid #deded9;border-radius:22px;background:#f7f7f5;margin-bottom:22px}.origin-3d-icon{display:grid;place-items:center;width:58px;height:58px;border-radius:16px;background:#111;color:#fff;font-size:12px;font-weight:900}.origin-3d-empty strong{font-size:16px}.origin-3d-empty p{margin:5px 0 8px;color:#777772;font-size:13px;line-height:1.5}.origin-3d-empty a{color:#6d5dfc;font-size:13px;font-weight:800;text-decoration:none}
+    .origin-detail-bar{display:flex;justify-content:space-between;gap:10px;align-items:center;border-bottom:1px solid #deded9;padding-bottom:12px;margin-bottom:8px}.origin-detail-bar span{font-size:10px;font-weight:800;letter-spacing:.13em;color:#6d5dfc}.origin-detail-bar small{color:#999;font-size:10px}.origin-spec-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));border:1px solid #deded9;border-radius:18px;overflow:hidden}.origin-spec-row{display:flex;justify-content:space-between;gap:15px;padding:12px 14px;border-bottom:1px solid #deded9;background:#fff}.origin-spec-row:nth-child(4n+1),.origin-spec-row:nth-child(4n+2){background:#fafaf8}.origin-spec-row span{text-transform:capitalize;color:#777772;font-size:12px}.origin-spec-row strong{text-align:right;font-size:12px;max-width:65%;overflow-wrap:anywhere}.origin-spec-note,.origin-disclaimer{margin:15px 0 0;color:#888883;font-size:11px;line-height:1.6}.origin-empty-state,.origin-loading{padding:42px 18px;text-align:center;border:1px dashed #deded9;border-radius:20px;background:#fafaf8}.origin-empty-state p,.origin-loading p{color:#777772;font-size:13px}.origin-spinner{width:26px;height:26px;margin:0 auto 14px;border:2px solid #deded9;border-top-color:#6d5dfc;border-radius:50%;animation:originSpin .7s linear infinite}@keyframes originSpin{to{transform:rotate(360deg)}}
+    @media(max-width:700px){.origin-product-sheet{bottom:0;width:100%;max-height:94vh;padding:21px;border-radius:26px 26px 0 0}.origin-3d-wrap iframe{height:320px}.origin-spec-grid{grid-template-columns:1fr}.origin-product-heading h2{font-size:34px}.origin-live-pill{margin-right:42px}.origin-spec-row{display:block}.origin-spec-row strong{display:block;text-align:left;max-width:100%;margin-top:4px}.origin-detail-bar{display:block}.origin-detail-bar small{display:block;margin-top:4px}}
   `;
   document.head.appendChild(style);
 
-  document.addEventListener('keydown', event => { if (event.key === 'Escape') closeProduct(); });
-  const observer = new MutationObserver(() => { ensureModal(); addVersionBadge(); decorateProducts(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+  const observer = new MutationObserver(() => { createModal(); addVersionBadge(); decorateProducts(); });
   observer.observe(document.body, { childList:true, subtree:true });
-  ensureModal();
-  addVersionBadge();
-  decorateProducts();
+  createModal(); addVersionBadge(); decorateProducts();
 })();
