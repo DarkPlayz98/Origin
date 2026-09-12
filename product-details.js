@@ -27,9 +27,9 @@
     'Dunk': { type:'Footwear', models:[['Dunk Low','Low-top basketball-inspired sneaker · rubber outsole'],['Dunk High','High-top construction · padded collar']] },
     'Pegasus': { type:'Running shoe', models:[['Pegasus','Neutral daily trainer family · responsive foam · engineered mesh variants']] },
     'Pixel': { type:'Hardware family', models:[['Pixel phone','Google Tensor-class chip · Android · multi-camera system; exact specs vary by generation'],['Pixel Watch','Wear OS · health sensors · circular OLED-class display'],['Pixel Tablet','Android tablet · Tensor-class platform generation dependent']] },
-    'Android': { type:'Operating system', models:[['Android 16','Mobile OS · Material 3 Expressive era · device-specific features vary'],['Android Go','Optimized Android edition for entry-level devices']] },
+    'Android': { type:'Operating system', models:[['Android 16','Mobile OS · Material 3 era · device-specific features vary'],['Android Go','Optimized Android edition for entry-level devices']] },
     'Google Maps': { type:'Software', models:[['Maps mobile app','Android/iOS navigation · maps · routing · places'],['Maps web','Browser-based maps · routing · places · satellite imagery']] },
-    'Chrome': { type:'Browser', models:[['Chrome desktop','Windows/macOS/Linux · extensions · multi-process browser architecture'],['Chrome mobile','Android/iOS · mobile tab and sync features']] },
+    'Chrome': { type:'Browser', models:[['Chrome desktop','Windows/macOS/Linux · extensions · multi-process browser architecture'],['Chrome mobile','Android/iOS · mobile tabs and sync features']] },
     'Figma Design': { type:'Design software', models:[['Design editor','Browser/desktop collaborative UI design · multiplayer editing'],['Dev Mode','Developer-focused inspection · measurements · code-oriented handoff']] },
     'FigJam': { type:'Collaboration software', models:[['FigJam board','Online whiteboard · multiplayer collaboration · widgets'],['FigJam templates','Reusable workshop and planning boards']] },
     'Figma Slides': { type:'Presentation software', models:[['Slides','Collaborative presentations · design-system integration · browser based']] },
@@ -37,21 +37,15 @@
     'Airbnb app': { type:'Travel software', models:[['Guest experience','Search · maps · booking · messaging · trip management'],['Host experience','Listing management · calendar · pricing · guest communication']] }
   };
 
-  function escapeHTML(value) { return String(value ?? '').replace(/[&<>\"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','\\':'&#92;','"':'&quot;'}[c])); }
+  function escapeHTML(value) { return String(value ?? '').replace(/[&<>\\"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','\\':'&#92;','"':'&quot;'}[c])); }
 
   function showProduct(company, product) {
-    const data = catalog[product] || {
-      type: 'Product / service',
-      models: [['Product profile', 'Origin has not catalogued generation-level specifications for this product yet. The product name, company and role in the company story are preserved.']]
-    };
+    const data = catalog[product] || { type:'Product / service', models:[['Product profile','Origin has not catalogued generation-level specifications for this product yet. The product name, company and role in the company story are preserved.']] };
     const modal = document.getElementById('originProductModal');
     modal.querySelector('[data-product-title]').textContent = product;
     modal.querySelector('[data-product-company]').textContent = `${company.name} · ${data.type}`;
     modal.querySelector('[data-product-models]').innerHTML = data.models.map((model, index) => `
-      <article class="origin-model-card">
-        <div class="origin-model-number">${String(index + 1).padStart(2,'0')}</div>
-        <div><h3>${escapeHTML(model[0])}</h3><p>${escapeHTML(model[1])}</p></div>
-      </article>`).join('');
+      <article class="origin-model-card"><div class="origin-model-number">${String(index + 1).padStart(2,'0')}</div><div><h3>${escapeHTML(model[0])}</h3><p>${escapeHTML(model[1])}</p></div></article>`).join('');
     modal.hidden = false;
     document.body.classList.add('origin-modal-open');
     requestAnimationFrame(() => modal.classList.add('is-open'));
@@ -71,22 +65,19 @@
     modal.id = 'originProductModal';
     modal.className = 'origin-product-modal';
     modal.hidden = true;
-    modal.innerHTML = `
-      <div class="origin-product-backdrop" data-product-close></div>
-      <section class="origin-product-sheet" role="dialog" aria-modal="true" aria-labelledby="originProductTitle">
-        <button class="origin-product-close" type="button" aria-label="Close" data-product-close>×</button>
-        <div class="origin-product-kicker">PRODUCT EXPLORER · V2</div>
-        <div class="origin-product-heading"><div><h2 id="originProductTitle" data-product-title></h2><p data-product-company></p></div><span class="origin-v2-pill">V2</span></div>
-        <div class="origin-model-list" data-product-models></div>
-        <p class="origin-spec-note">Specs are concise reference points, not a complete technical specification sheet. Exact specifications can vary by generation, region and configuration.</p>
-      </section>`;
+    modal.innerHTML = `<div class="origin-product-backdrop" data-product-close></div><section class="origin-product-sheet" role="dialog" aria-modal="true" aria-labelledby="originProductTitle"><button class="origin-product-close" type="button" aria-label="Close" data-product-close>×</button><div class="origin-product-kicker">PRODUCT EXPLORER · V2</div><div class="origin-product-heading"><div><h2 id="originProductTitle" data-product-title></h2><p data-product-company></p></div><span class="origin-v2-pill">V2</span></div><div class="origin-model-list" data-product-models></div><p class="origin-spec-note">Specs are concise reference points, not a complete technical specification sheet. Exact specifications can vary by generation, region and configuration.</p></section>`;
     document.body.appendChild(modal);
     modal.addEventListener('click', event => { if (event.target.closest('[data-product-close]')) closeProduct(); });
+  }
+
+  function currentCompany(page) {
+    return { name: page.querySelector('.company-hero-copy h1')?.textContent?.trim() || 'Company' };
   }
 
   function decorateProducts() {
     const page = document.querySelector('#companyPage:not([hidden])');
     if (!page) return;
+    const company = currentCompany(page);
     page.querySelectorAll('.product-universe-card').forEach(card => {
       if (card.dataset.originProductReady) return;
       card.dataset.originProductReady = '1';
@@ -94,7 +85,8 @@
       card.setAttribute('tabindex','0');
       const product = card.querySelector('strong')?.textContent?.trim();
       card.setAttribute('aria-label', `Open ${product} models and specs`);
-      const open = () => showProduct(window.__originActiveCompany || {name:'Company'}, product);
+      card.title = `Open ${product} models & specs`;
+      const open = () => showProduct(company, product);
       card.addEventListener('click', open);
       card.addEventListener('keydown', event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); open(); } });
     });
@@ -110,16 +102,39 @@
     about.querySelector('.manifesto-mark')?.appendChild(badge);
   }
 
-  function decorate() {
-    ensureModal();
-    addVersionBadge();
-    decorateProducts();
-    const company = window.__originActiveCompany;
-    if (company) document.querySelectorAll('.product-universe-card').forEach(card => card.title = `Open ${card.querySelector('strong')?.textContent || 'product'} models & specs`);
-  }
+  const style = document.createElement('style');
+  style.textContent = `
+    .origin-version-badge{position:absolute;top:-10px;right:-14px;display:grid;place-items:center;min-width:34px;height:24px;padding:0 8px;border:1px solid #deded9;border-radius:999px;background:#fff;color:#6d5dfc;font-size:10px;font-weight:800;letter-spacing:.08em;box-shadow:0 8px 20px rgba(17,17,17,.08)}
+    .manifesto-mark{position:relative}
+    .origin-modal-open{overflow:hidden}
+    .origin-product-modal{position:fixed;inset:0;z-index:100;display:block}
+    .origin-product-modal[hidden]{display:none}
+    .origin-product-backdrop{position:absolute;inset:0;background:rgba(17,17,17,.36);backdrop-filter:blur(8px);opacity:0;transition:opacity .18s ease}
+    .origin-product-sheet{position:absolute;left:50%;bottom:18px;width:min(760px,calc(100% - 24px));max-height:min(82vh,760px);overflow:auto;transform:translate(-50%,24px);opacity:0;border:1px solid #deded9;border-radius:28px;background:#fff;padding:30px;box-shadow:0 30px 90px rgba(17,17,17,.22);transition:transform .22s var(--ease),opacity .18s ease}
+    .origin-product-modal.is-open .origin-product-backdrop{opacity:1}
+    .origin-product-modal.is-open .origin-product-sheet{transform:translate(-50%,0);opacity:1}
+    .origin-product-close{position:absolute;right:18px;top:18px;width:38px;height:38px;border:1px solid #deded9;border-radius:50%;background:#fff;font-size:25px;line-height:1;cursor:pointer}
+    .origin-product-kicker{font-size:10px;font-weight:800;letter-spacing:.14em;color:#6d5dfc;margin-bottom:12px}
+    .origin-product-heading{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;border-bottom:1px solid #deded9;padding-bottom:22px;margin-bottom:18px}
+    .origin-product-heading h2{margin:0;font-size:clamp(30px,5vw,48px);letter-spacing:-.045em;line-height:1}
+    .origin-product-heading p{margin:9px 0 0;color:#6e6e6a}
+    .origin-v2-pill{display:inline-grid;place-items:center;min-width:40px;height:28px;padding:0 10px;border-radius:999px;background:#ebe8ff;color:#6d5dfc;font-size:10px;font-weight:800;letter-spacing:.08em}
+    .origin-model-list{display:grid;gap:10px}
+    .origin-model-card{display:grid;grid-template-columns:44px 1fr;gap:16px;align-items:start;padding:17px;border:1px solid #deded9;border-radius:18px;background:#f7f7f5}
+    .origin-model-number{font-size:11px;font-weight:800;color:#6d5dfc;padding-top:2px}
+    .origin-model-card h3{margin:0;font-size:17px;letter-spacing:-.02em}
+    .origin-model-card p{margin:6px 0 0;color:#6e6e6a;font-size:14px;line-height:1.6}
+    .origin-spec-note{margin:18px 0 0;color:#888883;font-size:12px;line-height:1.6}
+    .product-universe-card{cursor:pointer;transition:transform .2s var(--ease),border-color .2s ease,background .2s ease,box-shadow .2s ease}
+    .product-universe-card:hover,.product-universe-card:focus-visible{transform:translateY(-3px);border-color:#bdb8ff;background:#fff;box-shadow:0 12px 30px rgba(17,17,17,.07);outline:none}
+    @media(max-width:640px){.origin-product-sheet{bottom:8px;padding:22px;border-radius:24px;max-height:88vh}.origin-product-heading h2{font-size:32px}.origin-model-card{grid-template-columns:30px 1fr;padding:14px}.origin-v2-pill{display:none}}
+  `;
+  document.head.appendChild(style);
 
   document.addEventListener('keydown', event => { if (event.key === 'Escape') closeProduct(); });
-  const observer = new MutationObserver(decorate);
+  const observer = new MutationObserver(() => { ensureModal(); addVersionBadge(); decorateProducts(); });
   observer.observe(document.body, { childList:true, subtree:true });
-  decorate();
+  ensureModal();
+  addVersionBadge();
+  decorateProducts();
 })();
