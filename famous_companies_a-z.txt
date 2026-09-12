@@ -1,0 +1,168 @@
+3M
+Adidas
+Adobe
+Airbnb
+Airbus
+Alibaba
+Amazon
+American Express
+AMD
+Anheuser-Busch InBev
+Apple
+AstraZeneca
+AT&T
+Audi
+Bank of America
+Barclays
+BASF
+Bayer
+Berkshire Hathaway
+BMW
+Boeing
+BP
+Bosch
+Burberry
+ByteDance
+Canon
+Caterpillar
+Chanel
+Chevron
+China Mobile
+Cisco
+Citigroup
+Coca-Cola
+Colgate-Palmolive
+Comcast
+Costco
+Dell
+Deloitte
+Delta Air Lines
+Deutsche Bank
+Disney
+Domino's Pizza
+Dropbox
+eBay
+Eli Lilly
+Emirates
+ExxonMobil
+FedEx
+Ferrari
+Ford
+Fox Corporation
+General Dynamics
+General Electric
+General Motors
+GlaxoSmithKline
+Goldman Sachs
+Google
+Gucci
+H&M
+Heineken
+Hermès
+Honda
+Honeywell
+HP
+HSBC
+Huawei
+Hyundai
+IBM
+IKEA
+Infosys
+Intel
+JD.com
+John Deere
+Johnson & Johnson
+JPMorgan Chase
+KFC
+Kellogg's
+Kia
+KPMG
+Kraft Heinz
+Lego
+Lenovo
+LG Electronics
+LinkedIn
+L'Oréal
+Louis Vuitton
+Lufthansa
+Marriott International
+Mastercard
+McDonald's
+Mercedes-Benz
+Merck
+Meta
+Microsoft
+Mitsubishi
+Morgan Stanley
+Nestlé
+Netflix
+Nike
+Nikon
+Nintendo
+Nissan
+Nokia
+Northrop Grumman
+Novartis
+Nvidia
+Oracle
+Panasonic
+Paramount Global
+PayPal
+PepsiCo
+Pfizer
+Philips
+Pinterest
+Porsche
+Prada
+Procter & Gamble
+PwC
+Qatar Airways
+Qualcomm
+Raytheon (RTX)
+Reddit
+Reebok
+Renault
+Rolex
+Rolls-Royce
+Salesforce
+Samsung
+SAP
+Saudi Aramco
+Shell
+Siemens
+Singapore Airlines
+Snap Inc.
+Sony
+SpaceX
+Spotify
+Starbucks
+Stellantis
+Subway
+Target
+Tesco
+Tesla
+TikTok
+T-Mobile
+Toshiba
+Toyota
+Uber
+UnitedHealth Group
+United Airlines
+Unilever
+UPS
+Verizon
+Visa
+Vodafone
+Volkswagen
+Volvo
+Walmart
+Warner Bros. Discovery
+Wells Fargo
+Xerox
+Xiaomi
+Yahoo
+Yamaha
+YouTube
+Yum! Brands
+Zara
+Zoom
