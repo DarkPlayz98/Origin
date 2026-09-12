@@ -1,0 +1,27 @@
+/* Origin product UI tight layout — removes excessive gaps/white space. */
+.origin-v6-modal .origin-v6-sheet{padding-top:18px!important;padding-bottom:24px!important}
+.origin-v6-modal .origin-v6-heading{margin-bottom:14px!important;gap:10px!important}
+.origin-v6-modal .origin-v6-heading p{margin:5px 0 0!important}
+.origin-v6-modal .origin-v6-kicker{margin:2px 0 8px!important}
+.origin-v6-modal .origin-v6-status,.origin-v6-modal .origin-v6-bar{padding:9px 0!important;margin-bottom:8px!important}
+.origin-v6-modal .origin-v6-models{gap:6px!important}
+.origin-v6-modal .origin-v6-models button{padding:9px 10px!important;border-radius:13px!important;min-height:0!important}
+.origin-v6-modal .origin-v6-device-image{padding:10px!important;margin-bottom:9px!important;border-radius:16px!important}
+.origin-v6-modal .origin-v6-device-image img{max-height:250px!important}
+.origin-v6-modal .origin-v6-3d{margin-bottom:9px!important;border-radius:16px!important}
+.origin-v6-modal .origin-v6-3d iframe{height:min(48vw,430px)!important}
+.origin-v6-modal .origin-v6-3d-empty{margin-bottom:9px!important;padding:14px!important;border-radius:16px!important}
+.origin-v6-modal .origin-v6-specs{border-radius:15px!important}
+.origin-v6-modal .origin-v6-specs>div{padding:10px 12px!important;min-height:0!important}
+.origin-v6-modal .origin-v6-specs span{margin-bottom:3px!important}
+.origin-v6-modal .origin-v6-note{margin:8px 2px!important}
+.origin-v6-modal .origin-v6-loading,.origin-v6-modal .origin-v6-error,.origin-v6-modal .origin-v6-empty{padding:26px 18px!important}
+@media(max-width:600px){
+ .origin-v6-modal .origin-v6-sheet{padding:14px 11px 24px!important}
+ .origin-v6-modal .origin-v6-heading h2{font-size:34px!important}
+ .origin-v6-modal .origin-v6-heading{margin-bottom:10px!important}
+ .origin-v6-modal .origin-v6-live{margin-top:8px!important;padding:6px 9px!important}
+ .origin-v6-modal .origin-v6-3d iframe{height:64vw!important}
+ .origin-v6-modal .origin-v6-models button{grid-template-columns:40px 1fr 14px!important;gap:9px!important}
+ .origin-v6-modal .origin-v6-models img,.origin-v6-modal .origin-v6-num{width:40px!important;height:40px!important}
+}
