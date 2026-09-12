@@ -4,7 +4,7 @@
  * Uses Google Search grounding + structured JSON so the browser receives data,
  * not a conversational answer.
  */
-const API = 'https://generativelanguage.googleapis.com/v1beta/interactions';
+const API = 'https://generativelanguage.googleapis.com/v1beta2/interactions';
 const MODEL = 'gemini-3.8-flash';
 const PREFIX = '/api/gemini';
 
@@ -68,7 +68,7 @@ const systemInstruction = [
   'Prefer manufacturer sources and reputable technical specification sources. Cross-check important fields when possible.',
   'Return ONLY the JSON object required by the schema. Never return markdown, headings, explanations, greetings, or prose outside the JSON.',
   'Do not guess. Use an empty string when a field cannot be verified.',
-  'For sections, organize all useful phone specifications into concise groups such as Network, Body, Display, Platform, Memory, Main Camera, Selfie Camera, Sound, Connectivity, Features, Battery, Software, and Pricing/Availability.',
+  'For sections, organize useful phone specifications into concise groups such as Network, Body, Display, Platform, Memory, Main Camera, Selfie Camera, Sound, Connectivity, Features, Battery, Software, and Pricing/Availability.',
   'Only mark found=true when the requested product is confidently identified as a phone.',
   'sources must contain direct URLs used as evidence when available.'
 ].join(' ');
@@ -86,8 +86,10 @@ function textFromInteraction(payload) {
   const steps = Array.isArray(payload?.steps) ? payload.steps : [];
   for (let i = steps.length - 1; i >= 0; i--) {
     const content = Array.isArray(steps[i]?.content) ? steps[i].content : [];
-    const text = content.find(x => typeof x?.text === 'string');
-    if (text) return text.text;
+    for (let j = content.length - 1; j >= 0; j--) {
+      const item = content[j];
+      if (item && typeof item.text === 'string') return item.text;
+    }
   }
   return '';
 }
@@ -151,15 +153,18 @@ export async function onRequest(context) {
     model: MODEL,
     input: prompt,
     system_instruction: systemInstruction,
-    tools: [{ type: 'google_search', search_types: ['web_search'] }],
-    response_format: {
-      type: 'text',
-      mime_type: 'application/json',
-      schema
-    },
+    tools: [{ type: 'google_search' }],
+    response_format: [
+      {
+        type: 'text',
+        mime_type: 'application/json',
+        schema
+      }
+    ],
     store: false,
     generation_config: {
       temperature: 0,
+      thinking_level: 'low',
       max_output_tokens: 7000
     }
   };
